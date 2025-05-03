@@ -1,0 +1,33 @@
+{
+  "before": null,
+  "after": {
+    "id": 1588,
+    "order_id": 3552,
+    "order_detail_id": 7418,
+    "activity_id": 1,
+    "activity_rule_id": 1,
+    "sku_id": 2,
+    "create_time": 1746278411000,
+    "operate_time": null
+  },
+  "source": {
+    "version": "1.9.7.Final",
+    "connector": "mysql",
+    "name": "mysql_binlog_source",
+    "ts_ms": 1746252196000,
+    "snapshot": "false",
+    "db": "gmall_config",
+    "sequence": null,
+    "table": "order_detail_activity",
+    "server_id": 1,
+    "gtid": null,
+    "file": "mysql-bin.000030",
+    "pos": 50515990,
+    "row": 0,
+    "thread": 489,
+    "query": null
+  },
+  "op": "c",
+  "ts_ms": 1746252194983,
+  "transaction": null
+}

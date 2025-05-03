@@ -1,0 +1,7 @@
+table1 :
+select vc as name, sum(uvCt) as value from realtime_v1.dws_traffic_vc_ch_ar_is_new_page_view_window group by vc
+
+table2:
+select sum(uvCt)as data,ch as categories from realtime_v1.dws_traffic_vc_ch_ar_is_new_page_view_window  group by ch
+
+
