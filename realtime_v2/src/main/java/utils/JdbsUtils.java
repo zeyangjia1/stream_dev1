@@ -19,7 +19,7 @@ public class JdbsUtils <t> {
         //注册驱动
         Class.forName("com.mysql.cj.jdbc.Driver");
         //建立连接
-        java.sql.Connection conn = DriverManager.getConnection(constat.MYSQL_URL, constat.MYSQL_USER_NAME, constat.MYSQL_PASSWORD);
+        Connection conn = DriverManager.getConnection(constat.MYSQL_URL, constat.MYSQL_USER_NAME, constat.MYSQL_PASSWORD);
         return conn;
     }
     //关闭链接

@@ -4,14 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zeyang_jia</groupId>
+    <groupId>com.zeyang</groupId>
     <artifactId>Stream_dev</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-
     <modules>
-        <module>realtime_v1</module>
-        <module>realtime_spring</module>
+        <module>realtime_v2</module>
+        <module>realtime_spring_v2</module>
     </modules>
+
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -31,6 +32,7 @@
         <flink.hbase.version>1.10.3</flink.hbase.version>
         <hbase.version>2.4.11</hbase.version>
         <cdh.dep.version>3.0.0-cdh6.3.2</cdh.dep.version>
+       
     </properties>
 
     <dependencyManagement>
@@ -358,5 +360,4 @@
             </resource>
         </resources>
     </build>
-
 </project>
