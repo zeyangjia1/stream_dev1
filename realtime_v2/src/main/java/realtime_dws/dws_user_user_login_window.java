@@ -165,12 +165,8 @@ public class dws_user_user_login_window extends BaseApp {
 
         //转成json
         //写入doris
-        SingleOutputStreamOperator<String> map1 = reduce.map(new MapFunction<UserLoginBean, String>() {
-            @Override
-            public String map(UserLoginBean userLoginBean)   {
-                return JSON.toJSONString(userLoginBean);
-            }
-        });
+        SingleOutputStreamOperator<String> map1 = reduce.map(JSON::toJSONString);
+
 //        map1.print();
 //   2> {"backCt":1,"curDate":"2025-04-16","edt":"2025-04-16 14:00:00","stt":"2025-04-16 11:00:00","uuCt":0}
 //

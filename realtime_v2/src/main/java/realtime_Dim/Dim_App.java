@@ -137,7 +137,7 @@ public class Dim_App extends BaseApp {
 //        2> ({"op":"u","dic_code":"1103","dic_name":"iiii"},CommonTable(sourceTable=base_dic, sinkTable=dim_base_dic, sinkColumns=dic_code,dic_name, sinkFamily=info, sinkRowKey=dic_code, op=c))
 
         dimDS.print();
-        dimDS.addSink(new flinksinkHbase());
+//        dimDS.addSink(new flinksinkHbase());
 
     }
 }

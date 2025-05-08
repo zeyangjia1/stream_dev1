@@ -1,0 +1,29 @@
+{
+  "op": "d",
+  "before": {
+    "create_time": 1746445102000,
+    "user_id": 174,
+    "appraise": "1201",
+    "comment_txt": "评论内容：17395856611583694931382631761259272358883241283186",
+    "nick_name": "梅琳",
+    "sku_id": 32,
+    "id": 123,
+    "spu_id": 11,
+    "order_id": 1189
+  },
+  "source": {
+    "thread": 2488,
+    "server_id": 1,
+    "version": "1.9.7.Final",
+    "file": "mysql-bin.000038",
+    "connector": "mysql",
+    "pos": 11718810,
+    "name": "mysql_binlog_source",
+    "row": 1,
+    "ts_ms": 1746629280000,
+    "snapshot": "false",
+    "db": "gmall_config",
+    "table": "comment_info"
+  },
+  "ts_ms": 1746629280886
+}

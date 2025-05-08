@@ -27,7 +27,7 @@ import utils.finksink;
  * @Date 2025/4/14 11:40
  * @description: 事实表分流
  */
-//数据已经跑了重新
+//跑不出来
 
 public class dwd_base_db extends BaseApp {
     public static void main(String[] args) throws Exception {
@@ -63,6 +63,8 @@ public class dwd_base_db extends BaseApp {
         //读取数据 封装为流
         DataStreamSource<String> mysqlStrDS = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "mysql_source");
         //对流中数据进行类型转换   jsonStr->实体类对象
+//        mysqlStrDS.print();
+
         SingleOutputStreamOperator<TableProcessDwd> tpDS = mysqlStrDS.map(
                 new MapFunction<String, TableProcessDwd>() {
                     @Override
@@ -89,23 +91,23 @@ public class dwd_base_db extends BaseApp {
 
 //        tpDS.print();
 
-        //TODO 对配置流进行广播 ---broadcast
+        // 对配置流进行广播 ---broadcast
         MapStateDescriptor<String, TableProcessDwd> mapStateDescriptor
                 = new MapStateDescriptor<String, TableProcessDwd>
                 ("mapStateDescriptor",String.class, TableProcessDwd.class);
         BroadcastStream<TableProcessDwd> broadcastDS = tpDS.broadcast(mapStateDescriptor);
-
-//        //TODO 关联主流业务数据和广播流中的配置数据   --- connect
+//        TableProcessDwd(sourceTable=coupon_use, sourceType=insert, sinkTable=dwd_tool_coupon_get, sinkColumns=id,coupon_id,user_id,get_time,coupon_status, op=r)
+//        tpDS.print();
+//        // 关联主流业务数据和广播流中的配置数据   --- connect
         BroadcastConnectedStream<JSONObject, TableProcessDwd> connectDS = jsonObjDS.
                 connect(broadcastDS);
-//        //TODO 对关联后的数据进行处理   --- process
-        SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> splitDS = connectDS.process(new BaseDbTableProcessFunction(mapStateDescriptor));
-        //TODO 将处理逻辑比较简单的事实表数据写到kafka的不同主题中
+//        // 对关联后的数据进行处理   --- proces
+        SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> splitDS =
+                connectDS.process(new BaseDbTableProcessFunction(mapStateDescriptor));
+        // 将处理逻辑比较简单的事实表数据写到kafka的不同主题中
+        splitDS.print();
 
-        splitDS.sinkTo(finksink.getKafkaSink());
-
-
-
+//        splitDS.sinkTo(finksink.getKafkaSink());
     }
 
 }

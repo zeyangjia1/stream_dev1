@@ -154,17 +154,13 @@ public class dws_traffic_home_detail_page_view_window extends BaseApp {
 //        reduceDS.print();
 //        4> TrafficHomeDetailPageViewBean(stt=2025-04-16 23:11:57, edt=2025-04-16 23:12:00, curDate=2025-04-16, homeUvCt=0, goodDetailUvCt=1, ts=1744816317782)
 
-        SingleOutputStreamOperator<String> map = reduceDS.map(new MapFunction<TrafficHomeDetailPageViewBean, String>() {
-            @Override
-            public String map(TrafficHomeDetailPageViewBean trafficHomeDetailPageViewBean)   {
-                return com.alibaba.fastjson2.JSON.toJSONString(trafficHomeDetailPageViewBean);
-            }
-        });
-//        map.print();
+        SingleOutputStreamOperator<String> map = reduceDS.map(JSON::toJSONString);
+
+        map.print();
 //        1> {"curDate":"2025-04-16","edt":"2025-04-16 23:09:21","goodDetailUvCt":1,"homeUvCt":0,"stt":"2025-04-16 23:09:18"}
 //        Caused by: org.apache.doris.flink.exception.DorisRuntimeException: tabel {} stream load error: realtime_v1.dws_traffic_home_detail_page_view_window, see more in [CANCELLED][DATA_QUALITY_ERROR]Encountered unqualified data, stop processing
 
-        map.sinkTo(finksink.getDorisSink("dws_traffic_home_detail_page_view_window"));
+//        map.sinkTo(finksink.getDorisSink("dws_traffic_home_detail_page_view_window"));
     }
 
 }

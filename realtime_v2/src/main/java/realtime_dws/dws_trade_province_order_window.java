@@ -198,23 +198,19 @@ public class dws_trade_province_order_window extends BaseApp {
             @Override
             public TablepenviceOrderBean map(TablepenviceOrderBean tablepenviceOrderBean)  {
                 String provinceId = tablepenviceOrderBean.getProvinceId();
-                JSONObject row = Hbaseutli.getRow(hbaseConn, "gmall2025_config", "dim_base_province", provinceId, JSONObject.class);
+                JSONObject row = Hbaseutli.getRow(hbaseConn, "gmall_config", "dim_base_province", provinceId, JSONObject.class);
                 tablepenviceOrderBean.setProvinceName(row.getString("name"));
                 return tablepenviceOrderBean;
             }
         });
-        SingleOutputStreamOperator<String> map1 = map.map(new RichMapFunction<TablepenviceOrderBean, String>() {
-            @Override
-            public String map(TablepenviceOrderBean tablepenviceOrderBean)   {
-                return JSON.toJSONString(tablepenviceOrderBean);
-            }
-        });
-//        map1.print();
+        SingleOutputStreamOperator<String> map1 = map.map(JSON::toJSONString);
+
+        map1.print();
 //        2> {"curDate":"2025-04-13","edt":"2025-04-13 22:28:40","orderAmount":157122.69,"orderCount":87,"provinceId":"28","provinceName":"海南","stt":"2025-04-13 22:28:30"}
 
-        //        //TODO 10.将关联的结果写到Doris中
+        //        // 10.将关联的结果写到Doris中
 
-        map1.sinkTo(finksink.getDorisSink("dws_trade_province_order_window"));
+//        map1.sinkTo(finksink.getDorisSink("dws_trade_province_order_window"));
 
     }
 }

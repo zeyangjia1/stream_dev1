@@ -1,4 +1,6 @@
 package realtime_Dim;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
@@ -8,7 +10,11 @@ import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.util.Collector;
+
 import java.util.Properties;
 /**
  * @Package PACKAGE_NAME.Flink_Cdc
@@ -46,7 +52,17 @@ public class Flink_Cdc {
         //修改 u
         //r 读
 //        {"before":null,"after":{"id":2944,"order_id":1504,"order_status":"1001","create_time":1744068523000,"operate_time":null},"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1744100949000,"snapshot":"false","db":"realtime","sequence":null,"table":"order_status_log","server_id":1,"gtid":null,"file":"mysql-bin.000001","pos":2446435,"row":0,"thread":177,"query":null},"op":"c","ts_ms":1744100949425,"transaction":null}
-        ds.print();
+        SingleOutputStreamOperator<String> after = ds.process(new ProcessFunction<String, String>() {
+            @Override
+            public void processElement(String s, ProcessFunction<String, String>.Context context, Collector<String> collector) throws Exception {
+                JSONObject after = JSON.parseObject(s).getJSONObject("after");
+                if (after != null) {
+                    collector.collect(s);
+                }
+            }
+        });
+        after.print();
+
         KafkaSink<String> sink = KafkaSink.<String>builder()
                 .setBootstrapServers(brokers)
                 .setRecordSerializer(KafkaRecordSerializationSchema.builder()
@@ -57,7 +73,7 @@ public class Flink_Cdc {
                 )
                 .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
                 .build();
-        ds.sinkTo(sink);
+        after.sinkTo(sink);
         env.execute("Print MySQL Snapshot + Binlog");
     }
 }

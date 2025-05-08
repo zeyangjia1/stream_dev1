@@ -125,7 +125,7 @@ public class dwd_trade_order_pay_suc_detail extends BasesqlApp {
 //                        "and od.et <= pi.et + interval '5' second " +
                         "join base_dic for system_time as of pi.proc_time as dic " +
                         "on pi.payment_type=dic.dic_code ");
-//        result.execute().print();
+        result.execute().print();
 
         // 6. 写出到 kafka 中
         tableEnv.executeSql("create table dwd_trade_order_payment_success(" +
@@ -150,6 +150,6 @@ public class dwd_trade_order_pay_suc_detail extends BasesqlApp {
                 "PRIMARY KEY (order_detail_id) NOT ENFORCED " +
 
                 ")" + Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_PAYMENT_SUCCESS));
-        result.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_PAYMENT_SUCCESS);
+//        result.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_PAYMENT_SUCCESS);
     }
 }

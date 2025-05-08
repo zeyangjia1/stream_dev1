@@ -1,4 +1,4 @@
-package utils;
+package SensitiveWordFiltering;
 
 import avro.shaded.com.google.common.cache.Cache;
 import avro.shaded.com.google.common.cache.CacheBuilder;
@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.MD5Hash;
+import utils.HbaseUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,8 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @Package com.retailersv1.func.AsyncHbaseDimBaseDicFunc
- * @Author zeyang_jia
- * @Date 2025/5/7 20:47
+ * @Author zhou.han
+ * @Date 2025/3/15 20:47
  * @description: Async DimBaseDic
  */
 public class AsyncHbaseDimBaseDicFunc extends RichAsyncFunction<JSONObject,JSONObject> {

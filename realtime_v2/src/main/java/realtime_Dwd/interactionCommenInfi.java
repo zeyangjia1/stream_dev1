@@ -107,7 +107,7 @@ public class interactionCommenInfi {
                 "    ts_ms bigint,\n" +
                 "    PRIMARY KEY (id) NOT ENFORCED\n" +
                 ")"+ Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_INTERACTION_COMMENT_INFO));
-        joinedTable.executeInsert(constat.TOPIC_DWD_INTERACTION_COMMENT_INFO);
+//        joinedTable.executeInsert(constat.TOPIC_DWD_INTERACTION_COMMENT_INFO);
 
     }
 

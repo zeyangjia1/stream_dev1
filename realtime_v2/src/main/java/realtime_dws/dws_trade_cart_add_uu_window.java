@@ -133,18 +133,13 @@ public class dws_trade_cart_add_uu_window extends BaseApp {
 
         // 写入doris
 
-        SingleOutputStreamOperator<String> map1 = aggregate.map(new MapFunction<CartADDUU, String>() {
-            @Override
-            public String map(CartADDUU cartADDUU)   {
-                return JSON.toJSONString(cartADDUU);
-            }
-        });
+        SingleOutputStreamOperator<String> map1 = aggregate.map(JSON::toJSONString);
         map1.print();
         //        Caused by: org.apache.doris.flink.exception.DorisRuntimeException:
         //        tabel {} stream load error: realtime_v1.dws_trade_cart_add_uu_window,
         //        see more in [DATA_QUALITY_ERROR]too many filtered rows
 
-        map1.sinkTo(finksink.getDorisSink("dws_trade_cart_add_uu_window"));
+//        map1.sinkTo(finksink.getDorisSink("dws_trade_cart_add_uu_window"));
 
     }
 }

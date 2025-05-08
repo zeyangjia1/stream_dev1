@@ -11,6 +11,7 @@
       <set>
         <option value="$PROJECT_DIR$/realtime_spring/pom.xml" />
         <option value="$PROJECT_DIR$/realtime_v1/pom.xml" />
+        <option value="$PROJECT_DIR$/realtime_v3/pom.xml" />
       </set>
     </option>
   </component>

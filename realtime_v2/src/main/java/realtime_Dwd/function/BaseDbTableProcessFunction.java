@@ -26,6 +26,7 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
 
     private Map<String, TableProcessDwd> configMap = new HashMap<>();
 
+
     public BaseDbTableProcessFunction(MapStateDescriptor<String, TableProcessDwd> mapStateDescriptor) {
         this.mapStateDescriptor = mapStateDescriptor;
     }
@@ -55,6 +56,8 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
     public void processElement(JSONObject jsonObj, BroadcastProcessFunction<JSONObject, TableProcessDwd, Tuple2<JSONObject, TableProcessDwd>>.ReadOnlyContext ctx, Collector<Tuple2<JSONObject, TableProcessDwd>> out) throws Exception {
         //{"table":"xxx","type":"update","ts":1710075970,"data":{"id":1,"tm_name":"Redmi","logo_url":"abc","create_time":"2021-12-14 00:00:00","operate_time":null},"old":{"tm_name":"Redmi111"}}
         //获取处理的业务数据库表的表名
+//        System.err.println("processElement"+jsonObj+"主流");
+
         String table = jsonObj.getJSONObject("source").getString("table");
         //获取操作类型
         String type = jsonObj.getString("op");
@@ -83,6 +86,8 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
     @Override
     public void processBroadcastElement(TableProcessDwd tp, BroadcastProcessFunction<JSONObject, TableProcessDwd, Tuple2<JSONObject, TableProcessDwd>>.Context ctx, Collector<Tuple2<JSONObject, TableProcessDwd>> out) throws Exception {
         //获取对配置表进行的操作的类型
+//        System.err.println("processBroadcastElement"+tp+"广播");
+
         String op = tp.getOp();
         //获取广播状态
         BroadcastState<String, TableProcessDwd> broadcastState = ctx.getBroadcastState(mapStateDescriptor);
@@ -116,4 +121,5 @@ public class BaseDbTableProcessFunction extends BroadcastProcessFunction<JSONObj
 
     }
 }
+
 

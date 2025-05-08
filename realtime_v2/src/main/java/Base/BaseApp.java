@@ -57,6 +57,7 @@ public  abstract class BaseApp {
         //3.3 消费数据 封装为流
         DataStreamSource<String> kafkaDs
                 = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka_Source");
+
         //TODO 4.处理逻辑
         handle(env,kafkaDs);
         //TODO 5.提交作业
@@ -65,5 +66,4 @@ public  abstract class BaseApp {
 
     public abstract  void handle
             (StreamExecutionEnvironment env, DataStreamSource<String> kafkaStrDS);
-
 }

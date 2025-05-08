@@ -117,7 +117,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
 
 //        result.execute().print();
 tableEnv.createTemporaryView("result_V1",result_V1);
-//tableEnv.sqlQuery("Select * from result_V1").execute().print();
+tableEnv.sqlQuery("Select * from result_V1").execute().print();
 
        //  7. 写出到 kafka 中
         tableEnv.executeSql(
@@ -142,7 +142,7 @@ tableEnv.createTemporaryView("result_V1",result_V1);
                         "primary key(id) not enforced " +
                         ")" + Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_DETAIL));
 
-        result_V1.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_DETAIL);
+//        result_V1.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_DETAIL);
     }
 
 }

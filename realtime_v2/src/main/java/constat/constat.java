@@ -11,6 +11,7 @@ public   class  constat {
 
     public static final String TOPIC_DB = "topic_db";
     public static final String TOPIC_LOG = "topic_log";
+    public static final String TOPIC_API = "sk-slhdrlyogyuoqaucjelhpgcsshwotlmsrpzozxapvquubkgm";
 
     public static final String MYSQL_HOST = "cdh03";
     public static final int MYSQL_PORT = 3306;

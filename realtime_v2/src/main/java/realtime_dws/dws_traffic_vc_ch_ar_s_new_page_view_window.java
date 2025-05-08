@@ -158,13 +158,8 @@ public class dws_traffic_vc_ch_ar_s_new_page_view_window extends BaseApp {
 //        2> TrafficPageViewBean(stt=2025-04-16 23:31:10, edt=2025-04-16 23:31:20, cur_date=2025-04-16, vc=v2.1.134, ch=oppo, ar=11, isNew=1, uvCt=0, svCt=0, pvCt=1, durSum=19526, ts=1744817474280)
 
         SingleOutputStreamOperator<String> map = result
-                .map(new MapFunction<TrafficPageViewBean, String>() {
+                .map(JSON::toJSONString);
 
-                    @Override
-                    public String map(TrafficPageViewBean trafficPageViewBean)   {
-                     return JSON.toJSONString(trafficPageViewBean);
-                    }
-                });
 
         map.sinkTo(finksink.getDorisSink("dws_traffic_vc_ch_ar_is_new_page_view_window"));
 //   map.print();

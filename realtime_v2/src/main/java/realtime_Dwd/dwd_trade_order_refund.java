@@ -89,7 +89,7 @@ public class dwd_trade_order_refund extends BasesqlApp {
                         "on ri.refund_type=dic1.dic_code " +
                         "join base_dic for system_time as of ri.proc_time as dic2 " +
                         "on ri.refund_reason_type=dic2.dic_code ");
-tableEnv.createTemporaryView("result_V1",result_V1);
+         tableEnv.createTemporaryView("result_V1",result_V1);
          //tableEnv.sqlQuery("select * from result_V1").execute().print();
         // 5. 写出到 kafka
         tableEnv.executeSql(

@@ -103,7 +103,7 @@ public class DwdTradeOrderCancelDetail extends BasesqlApp {
                         "ts bigint ," +
                         "primary key(id) not enforced " +
                         ")" + Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_CANCEL));
-        result.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_CANCEL);
+//        result.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_CANCEL);
 
     }
 }

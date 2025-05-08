@@ -36,7 +36,7 @@ public class Addthefactsheet extends BasesqlApp {
                 "    (op='u' and `before`['sku_num'] is not null " +
                 "and (CAST(after['sku_num'] AS INT) > CAST(`before`['sku_num'] AS INT)))\n" +
                 ")");
-//        cartInfo.execute().print();
+        cartInfo.execute().print();
         tableEnv.executeSql(" create table "+constat.TOPIC_DWD_TRADE_CART_ADD+"(\n" +
                 "    id string,\n" +
                 "    user_id string,\n" +
@@ -47,7 +47,7 @@ public class Addthefactsheet extends BasesqlApp {
                 " )" + Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_TRADE_CART_ADD));
         //写入kafka
 
-        cartInfo.executeInsert(constat.TOPIC_DWD_TRADE_CART_ADD);
+//        cartInfo.executeInsert(constat.TOPIC_DWD_TRADE_CART_ADD);
 
 
     }
