@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @Package com.retailersv1.DbusBanBlackListUserInfo2Kafka
- * @Author zhou.han
- * @Date 2025/3/29 15:09
+ * @Package SensitiveWordFiltering.DbusBanBlackListUserInfo2Kafka
+ * @Author zeyang_jia
+ * @Date 2025/5/8 11:10
  * @description: 黑名单封禁 Task 04
  * @Test
  * DataStreamSource<String> kafkaCdcDbSource = env.socketTextStream("127.0.0.1", 9999);

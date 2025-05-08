@@ -25,9 +25,9 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Package com.retailersv1.DbusDBCommentFactData2Kafka
+ * @Package SensitiveWordFiltering.DbusDBCommentFactData2Kafka
  * @Author zeyang_jia
- * @Date 2025/5/7 18:44
+ * @Date 2025/5/8 16:10
  * @description: Read MySQL CDC binlog data to kafka topics Task-03
  */
 public class DbusDBCommentFactData2Kafka {

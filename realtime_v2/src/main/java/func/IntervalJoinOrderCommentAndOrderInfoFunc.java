@@ -5,9 +5,9 @@ import org.apache.flink.streaming.api.functions.co.ProcessJoinFunction;
 import org.apache.flink.util.Collector;
 
 /**
- * @Package com.retailersv1.func.IntervalJoinOrderCommentAndOrderInfoFunc
- * @Author zhou.han
- * @Date 2025/3/16 16:28
+ * @Package func.IntervalJoinOrderCommentAndOrderInfoFunc
+ * @Author zeyang_jia
+ * @Date 2025/5/7 15:40
  * @description: orderComment Join orderInfo Msg
  */
 public class IntervalJoinOrderCommentAndOrderInfoFunc extends ProcessJoinFunction<JSONObject,JSONObject,JSONObject> {

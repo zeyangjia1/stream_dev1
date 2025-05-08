@@ -7,9 +7,9 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.hadoop.hbase.client.Connection;
 
 /**
- * @Package com.stream.func.MapUpdateHbaseDimTable
- * @Author zhou.han
- * @Date 2024/12/19 14:11
+ * @Package func.MapUpdateHbaseDimTable
+ * @Author zeyang_jia
+ * @Date 2025/5/7 20:23
  * @description:
  */
 public class MapUpdateHbaseDimTableFunc extends RichMapFunction<JSONObject,JSONObject> {

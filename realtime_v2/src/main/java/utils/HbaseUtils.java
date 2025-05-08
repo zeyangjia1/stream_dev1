@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * @author zeyang_jia
- * @time: 2025/5/7 18:06
+ * @time: 2025/4/23 18:40
  * @className: HBaseUtils
  * @description HBase 工具类
  */
