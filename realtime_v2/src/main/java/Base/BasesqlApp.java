@@ -43,7 +43,6 @@ public abstract class BasesqlApp {
         env.setRestartStrategy(RestartStrategies.failureRateRestart(3, Time.days(30),Time.seconds(3)));
         //2.6 设置状态后端
         env.setStateBackend(new HashMapStateBackend());
-//        env.getCheckpointConfig().setCheckpointStorage("hdfs://chd01:8020/ck/" + ck);
         //2.7 设置操作hadoop的用户
 //        System.setProperty("HADOOP_USER_NAME","root");
 

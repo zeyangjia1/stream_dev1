@@ -401,10 +401,30 @@ public class dws_trade_sku_order_window extends BaseApp {
 //        c1Stream.print();
         SingleOutputStreamOperator<String> map = c1Stream.map(JSON::toJSONString);
 
-        map.print();
-//        2> {"activityReduceAmount":0.00,"category1Id":"8","category1Name":"个护化妆","category2Id":"54","category2Name":"香水彩妆","category3Id":"477","category3Name":"唇部","couponReduceAmount":1695.81,"curDate":"2025-05-05","edt":"2025-05-05 09:07:30","orderAmount":7592.19,"originalAmount":9288.0000,"skuId":"27","skuName":"索芙特i-Softto 口红不掉色唇膏保湿滋润 璀璨金钻哑光唇膏 Z02少女红 活力青春 璀璨金钻哑光唇膏 ","spuId":"9","spuName":"索芙特i-Softto 口红不掉色唇膏保湿滋润 璀璨金钻哑光唇膏 ","stt":"2025-05-05 09:07:20","trademarkId":"8","trademarkName":"索芙特"}
 
-//
+        map.print();
+
+//        map.print();
+//        2> {"activityReduceAmount":0.00,
+//        "category1Id":"8",
+//        "category1Name":"个护化妆",
+//        "category2Id":"54",
+//        "category2Name":"香水彩妆",
+//        "category3Id":"477",
+//        "category3Name":"唇部",
+//        "couponReduceAmount":1695.81,
+//        "curDate":"2025-05-05",
+//        "edt":"2025-05-05 09:07:30",
+//        "orderAmount":7592.19,
+//        "originalAmount":9288.0000,
+//        "skuId":"27","
+//        skuName":"索02少女红 活力青春 璀璨金钻哑光唇膏 ",
+//        "spuId":"9",
+//        "spuName":",
+//        "stt":"2025-05-05 09:07:20",
+//        "trademarkId":"8",
+//        "trademarkName":"索芙特"}
+
 //        map.sinkTo(finksink.getDorisSink("dws_trade_sku_order_window"));
     }
 }

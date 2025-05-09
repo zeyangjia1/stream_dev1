@@ -3,6 +3,7 @@ import Base.BaseApp;
 import bean.CartADDUU;
 import constat.constat;
 import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.api.common.functions.RichMapFunction;
 import utils.dataformtutil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -132,14 +133,17 @@ public class dws_trade_cart_add_uu_window extends BaseApp {
 
 
         // 写入doris
+        SingleOutputStreamOperator<String> map2 = aggregate.map(new RichMapFunction<CartADDUU, String>() {
+            @Override
+            public String map(CartADDUU cartADDUU) throws Exception {
+                return JSON.toJSONString(cartADDUU);
+            }
+        });
 
         SingleOutputStreamOperator<String> map1 = aggregate.map(JSON::toJSONString);
-        map1.print();
-        //        Caused by: org.apache.doris.flink.exception.DorisRuntimeException:
-        //        tabel {} stream load error: realtime_v1.dws_trade_cart_add_uu_window,
-        //        see more in [DATA_QUALITY_ERROR]too many filtered rows
+//        map1.print();
 
-//        map1.sinkTo(finksink.getDorisSink("dws_trade_cart_add_uu_window"));
+        map2.sinkTo(finksink.getDorisSink("dws_trade_cart_add_uu_window"));
 
     }
 }

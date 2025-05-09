@@ -71,8 +71,8 @@ public class DwsTrafficSourceKeywordPageViewWindow extends BasesqlApp
                 " 'connector' = 'doris'," +
                 " 'fenodes' = '" + constat.DORIS_FE_NODES + "'," +
                 "  'table.identifier' = '" + constat.DORIS_DATABASE + ".dws_traffic_source_keyword_page_view_window'," +
-                "  'username' = 'admin'," +
-                "  'password' = 'admin', " +
+                "  'username' = 'root'," +
+                "  'password' = '123456', " +
                 "  'sink.properties.format' = 'json', " +
                 "  'sink.buffer-count' = '2', " +
                 "  'sink.buffer-size' = '2048'," +

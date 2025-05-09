@@ -6,6 +6,11 @@ import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import constat.constat;
 import func.FilterBloomDeduplicatorFunc;
 import func.MapCheckRedisSensitiveWordsFunc;
+import org.apache.doris.flink.cfg.DorisExecutionOptions;
+import org.apache.doris.flink.cfg.DorisOptions;
+import org.apache.doris.flink.cfg.DorisReadOptions;
+import org.apache.doris.flink.sink.DorisSink;
+import org.apache.doris.flink.sink.writer.serializer.SimpleStringSerializer;
 import utils.ConfigUtils;
 import utils.EnvironmentSettingUtils;
 import utils.KafkaUtils;
@@ -20,6 +25,7 @@ import utils.ConfigUtils;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @Package SensitiveWordFiltering.DbusBanBlackListUserInfo2Kafka
@@ -85,14 +91,49 @@ public class DbusBanBlackListUserInfo2Kafka {
                 return jsonObject;
             }
         }).uid("second sensitive word check").name("second sensitive word check");
-//        secondCheckMap.print();
+        SingleOutputStreamOperator<String> map = secondCheckMap.map(JSON::toString);
 
-        secondCheckMap.map(data -> data.toJSONString())
-                        .sinkTo(
-                                KafkaUtils.buildKafkaSink("cdh01:9092", "result_sensitive_words_topic")
-                        )
-                        .uid("sink to kafka result sensitive words topic")
-                        .name("sink to kafka result sensitive words topic");
+       //写入doris
+        Properties props = new Properties();
+        props.setProperty("format", "json");
+        props.setProperty("read_json_by_line", "true"); // 每行一条 json 数据
+
+        DorisSink<String> sink = DorisSink.<String>builder()
+                .setDorisReadOptions(DorisReadOptions.builder().build())
+                .setDorisOptions(DorisOptions.builder() // 设置 doris 的连接参数
+                        .setFenodes("cdh03:8110")
+                        .setTableIdentifier(constat.DORIS_DATABASE + "." + "result_sensitive_words_user")
+                        .setUsername("root")
+                        .setPassword("123456")
+                        .build())
+                .setDorisExecutionOptions(DorisExecutionOptions.builder() // 执行参数
+                        //.setLabelPrefix("doris-label")  // stream-load 导入的时候的 label 前缀
+                        .disable2PC() // 开启两阶段提交后,labelPrefix 需要全局唯一,为了测试方便禁用两阶段提交
+                        .setDeletable(false)
+                        .setBufferCount(3) // 用于缓存stream load数据的缓冲条数: 默认 3
+                        .setBufferSize(5*1024*1024) //用于缓存stream load数据的缓冲区大小: 默认 1M
+                        .setMaxRetries(3)
+                        .setStreamLoadProp(props) // 设置 stream load 的数据格式 默认是 csv,根据需要改成 json
+                        .build())
+                .setSerializer(new SimpleStringSerializer())
+                .build();
+        map.sinkTo(sink);
+// 数据格式
+//        13> {"msg":"购买体验极差，商品质量差，小孔全面屏显示效果差，4800万超清四摄拍照模糊，5020mAh大电量待机时间短，128GB大存储不够用，8GB+128GB选择困难。",
+//        "consignee":"余华慧",
+//        "violation_grade":"","
+//        user_id":2304,
+//        "violation_msg":"","
+//        is_violation":0,
+//        "ts_ms":1746712419527,
+//        "ds":"20250508"}
+
+//        secondCheckMap.map(data -> data.toJSONString())
+//                        .sinkTo(
+//                                KafkaUtils.buildKafkaSink("cdh01:9092", "result_sensitive_words_topic")
+//                        )
+//                        .uid("sink to kafka result sensitive words topic")
+//                        .name("sink to kafka result sensitive words topic");
 
         env.execute();
     }

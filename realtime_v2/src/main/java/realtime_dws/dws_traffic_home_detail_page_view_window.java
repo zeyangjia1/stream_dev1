@@ -156,11 +156,12 @@ public class dws_traffic_home_detail_page_view_window extends BaseApp {
 
         SingleOutputStreamOperator<String> map = reduceDS.map(JSON::toJSONString);
 
-        map.print();
+//        map.print();
 //        1> {"curDate":"2025-04-16","edt":"2025-04-16 23:09:21","goodDetailUvCt":1,"homeUvCt":0,"stt":"2025-04-16 23:09:18"}
 //        Caused by: org.apache.doris.flink.exception.DorisRuntimeException: tabel {} stream load error: realtime_v1.dws_traffic_home_detail_page_view_window, see more in [CANCELLED][DATA_QUALITY_ERROR]Encountered unqualified data, stop processing
 
-//        map.sinkTo(finksink.getDorisSink("dws_traffic_home_detail_page_view_window"));
+        map.sinkTo(finksink.getDorisSink("dws_traffic_home_detail_page_view_window"));
+
     }
 
 }

@@ -2,11 +2,11 @@
 ./flink run-application \
 -d \
 -t yarn-application \
--ynm realtime_Dwd \
+-ynm Flink_Cdc \
 -yjm 900 \
 -ytm 900 \
 -yqu root.default \
--c realtime_Dwd.Addthefactsheet /opt/soft/flink-1.17.1/local_jars/realtime_v2-1.0-SNAPSHOT-jar-with-dependencies.jar
+-c realtime_Dwd.Flink_Cdc /opt/soft/flink-1.17.1/local_jars/realtime_v2-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 # 应用模式提交任务 HDFS提交
 ./flink run-application \

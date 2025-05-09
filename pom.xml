@@ -269,7 +269,25 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>3.3.1</version> <!-- 与你的 Flink 版本兼容的 Hadoop 版本 -->
+                <exclusions>
+                    <!-- 避免与 Flink 内部依赖冲突 -->
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
+            <!-- HDFS 依赖 -->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>3.3.1</version>
+            </dependency>
             <dependency>
                 <artifactId>commons-cli</artifactId>
                 <groupId>commons-cli</groupId>

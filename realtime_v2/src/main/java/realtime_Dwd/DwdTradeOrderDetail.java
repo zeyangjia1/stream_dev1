@@ -14,7 +14,6 @@ import utils.Sqlutil;
  * @description: 下单事实表
  *
  */
-
 public class DwdTradeOrderDetail extends BasesqlApp {
     public static void main(String[] args) {
         new DwdTradeOrderDetail().start
@@ -35,7 +34,8 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "after['source_type'] source_type," +
                         "after['sku_num'] sku_num," +
                         "cast(cast(after['sku_num'] as decimal(16, 2)) * " +
-                        "   cast(after['order_price'] as decimal(16, 2)) as String) split_original_amount," + // 分摊原始总金额
+                        "   cast(after['order_price'] as decimal(16, 2)) as String)" +
+                        " split_original_amount," + // 分摊原始总金额
                         "after['split_total_amount'] split_total_amount," +  // 分摊总金额
                         "after['split_activity_amount'] split_activity_amount," + // 分摊活动金额
                         "after['split_coupon_amount'] split_coupon_amount," + // 分摊的优惠券金额
@@ -106,6 +106,7 @@ public class DwdTradeOrderDetail extends BasesqlApp {
                         "od.split_original_amount," +
                         "od.split_activity_amount," +
                         "od.split_coupon_amount," +
+                        //订单明细拆分后的总金额
                         "od.split_total_amount," +
                         "od.ts_ms " +
                         "from order_detail od " +
@@ -143,6 +144,7 @@ tableEnv.sqlQuery("Select * from result_V1").execute().print();
                         ")" + Sqlutil.getUpsertKafkaDDL(constat.TOPIC_DWD_TRADE_ORDER_DETAIL));
 
 //        result_V1.executeInsert(constat.TOPIC_DWD_TRADE_ORDER_DETAIL);
+
     }
 
 }

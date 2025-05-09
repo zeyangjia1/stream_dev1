@@ -64,17 +64,18 @@ public class finksink {
         return kafkaSink;
     }
     public static DorisSink<String> getDorisSink(String tableName){
+//        DATA_QUALITY_ERROR
         Properties props = new Properties();
         props.setProperty("format", "json");
         props.setProperty("read_json_by_line", "true"); // 每行一条 json 数据
-
+//        props.setProperty("max_filter_ratio", "0.5");
         DorisSink<String> sink = DorisSink.<String>builder()
                 .setDorisReadOptions(DorisReadOptions.builder().build())
                 .setDorisOptions(DorisOptions.builder() // 设置 doris 的连接参数
                         .setFenodes("cdh03:8110")
                         .setTableIdentifier(constat.DORIS_DATABASE + "." + tableName)
-                        .setUsername("admin")
-                        .setPassword("admin")
+                        .setUsername("root")
+                        .setPassword("123456")
                         .build())
                 .setDorisExecutionOptions(DorisExecutionOptions.builder() // 执行参数
                         //.setLabelPrefix("doris-label")  // stream-load 导入的时候的 label 前缀
