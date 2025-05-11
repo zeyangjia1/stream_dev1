@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/User_Profile_five/pom.xml" />
         <option value="$PROJECT_DIR$/realtime_spring/pom.xml" />
         <option value="$PROJECT_DIR$/realtime_v1/pom.xml" />
         <option value="$PROJECT_DIR$/realtime_v3/pom.xml" />
