@@ -1,0 +1,30 @@
+{
+  "op": "c",
+  "after": {
+    "birthday": "1970-06-12",
+    "gender": "F",
+    "create_time": 1747086891000,
+    "login_name": "kh7z5lmw4kv",
+    "nick_name": "荔枝",
+    "name": "郑荔枝",
+    "user_level": "1",
+    "phone_num": "13883789548",
+    "id": 85,
+    "email": "kh7z5lmw4kv@yahoo.com.cn"
+  },
+  "source": {
+    "thread": 1293,
+    "server_id": 1,
+    "version": "1.9.7.Final",
+    "file": "mysql-bin.000046",
+    "connector": "mysql",
+    "pos": 63048548,
+    "name": "mysql_binlog_source",
+    "row": 0,
+    "ts_ms": 1747030156000,
+    "snapshot": "false",
+    "db": "realtime_v2",
+    "table": "user_info"
+  },
+  "ts_ms": 1747030154907
+}
