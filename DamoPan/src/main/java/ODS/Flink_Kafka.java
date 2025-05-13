@@ -64,7 +64,11 @@ public class Flink_Kafka {
                 .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
                 .build();
         ds.sinkTo(sink);
+
         env.execute("Print MySQL Snapshot + Binlog");
+
+
+
     }
 
 }

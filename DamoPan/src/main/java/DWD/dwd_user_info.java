@@ -1,7 +1,8 @@
 package DWD;
 import Base.BaseApp;
 import Constant.Constant;
-import Utils.FilterBloomDeduplicatorFunc_v2;
+import func.FilterBloomDeduplicatorFunc_v2;
+import Utils.FinkSink;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -12,6 +13,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.co.ProcessJoinFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -33,14 +35,11 @@ public class dwd_user_info extends BaseApp {
         //在kafka数据中过滤出user_info数据
         SingleOutputStreamOperator<JSONObject> UserInfoDS = kafkaStrDS.map(JSON::parseObject)
                 .filter(jsonObj -> "user_info".equals(jsonObj.getJSONObject("source").getString("table")));
-
+        //在kafka数据中过滤出userInfoSupMsgDS数据
         SingleOutputStreamOperator<JSONObject> userInfoSupMsgDS = kafkaStrDS.map(JSON::parseObject)
                 .filter(jsonObj -> "user_info_sup_msg".equals(jsonObj.getJSONObject("source").getString("table")));
 //        UserInfoDS.print();
-//        {"op":"r","after":{"birthday":6000,"create_time":1746567349000,"login_name":"tyy1jb7rn","nick_name":"阿梁","name":"韦梁","user_level":"1","phone_num":"13671183453","id":421,"email":"tyy1jb7rn@googlemail.com"},"source":{"server_id":0,"version":"1.9.7.Final","file":"","connector":"mysql","pos":0,"name":"mysql_binlog_source","row":0,"ts_ms":0,"snapshot":"false","db":"stream_retail","table":"user_info"},"ts_ms":1747016022079}
         //对字段
-
-
         //把birthday变换成yyyy-MM-dd
         SingleOutputStreamOperator<JSONObject> result_user = UserInfoDS.map(new RichMapFunction<JSONObject, JSONObject>() {
             @Override
@@ -56,7 +55,10 @@ public class dwd_user_info extends BaseApp {
                     // 如果 birthdayValue 不为 null，则尝试将其转换为标准日期格式
                     if (birthdayValue != null) {
                         // 将 birthday 转换为字符串形式以便后续解析
-                        String daysSinceBaseStr = birthdayValue.toString();
+                        String daysSinceBaseStr
+
+
+                                = birthdayValue.toString();
 
                         try {
                             // 尝试将字符串解析为表示自 1970-01-01 起的天数的 long 值
@@ -87,12 +89,15 @@ public class dwd_user_info extends BaseApp {
 //        mapDs.print();
         SingleOutputStreamOperator<JSONObject> filterDs = result_user.keyBy(jsonObj -> jsonObj.getJSONObject("after").getLong("id"))
                 .filter(new FilterBloomDeduplicatorFunc_v2(1000000, 0.01));
+//        filterDs.print();
 
         SingleOutputStreamOperator<JSONObject> UserInfo = filterDs.map(new MapFunction<JSONObject, JSONObject>() {
             @Override
             public JSONObject map(JSONObject jsonObject) throws Exception {
                 JSONObject result = new JSONObject();
                 JSONObject after = jsonObject.getJSONObject("after");
+                Long ts_ms = jsonObject.getLong("ts_ms");
+
                 if (jsonObject.containsKey("after")) {
                     result.put("uid", after.getString("id"));
                     result.put("uname", after.getString("name"));
@@ -102,7 +107,7 @@ public class dwd_user_info extends BaseApp {
                     result.put("phone_num", after.getString("phone_num"));
                     result.put("email", after.getString("email"));
                     result.put("birthday", after.getString("birthday"));
-                    result.put("ts_ms", after.getLongValue("ts_ms"));
+                    result.put("ts_ms",ts_ms);
                     String ear = after.getString("birthday");
                     //截取前4个
                     Integer intValue = new Integer(ear.substring(0, 4));
@@ -113,7 +118,6 @@ public class dwd_user_info extends BaseApp {
         });
 //        UserInfo.print();
 // 对userInfoSupMsgDS进行处理
-//        userInfoSupMsgDS.print();
         SingleOutputStreamOperator<JSONObject> userInfoSumMsgBean = userInfoSupMsgDS.keyBy(data -> data.getJSONObject("after").getLong("uid")).map(new MapFunction<JSONObject, JSONObject>() {
             @Override
             public JSONObject map(JSONObject jsonObject) throws Exception {
@@ -152,18 +156,26 @@ public class dwd_user_info extends BaseApp {
                 })
                 .uid("intervalJoin")
                 .name("intervalJoin");
-        name.print();
-//        {"birthday":"1981-01-12","uname":"俞旭","gender":"M","weight":"64","uid":"565","login_name":"n1tt8wi","unit_height":"cm","ear":1980,"user_level":"1","phone_num":"13115549881","unit_weight":"kg","email":"o1ja2m@ask.com","ts_ms":0,"height":"168"}
+//        name.print();
+//        {"birthday":"1981-01-12",
+//        "uname":"俞旭",
+//        "gender":"M",
+//        "weight":"64",
+//        "uid":"565",
+//        "login_name":"n1tt8wi",
+//        "unit_height":"cm",
+//        "ear":1980,
+//        "user_level":"1",
+//        "phone_num":"13115549881",
+//        "unit_weight":"kg",
+//        "email":"o1ja2m@ask.com",
+//        "ts_ms":0,
+//        "height":"168"}
 
 
-//        SingleOutputStreamOperator<String> map = UserInfo.map(data -> data.toJSONString());
-//        map.sinkTo(finksink.getkafkasink("dmp_user_info"));
+        SingleOutputStreamOperator<String> map = name.map(data -> data.toJSONString());
+//        map.print();
 
-
-
-
-        //对订单表进行过滤
-
-
+        map.sinkTo(FinkSink.getkafkasink(Constant.dmp_user_info));
     }
 }

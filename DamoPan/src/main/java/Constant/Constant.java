@@ -19,7 +19,7 @@ public class Constant {
     public static final String topic_log = "topic_log_v2";
     public static final String HBASE_NAMESPACE = "realtime_v2";
     public static final String MYSQL_URL = "jdbc:mysql://cdh03:3306?useSSL=false";
-    public static final String TOPIC_DWD_TRAFFIC_START = "dwd_traffic_start";
+    public static final String dmp_user_info = "dmp_user_info";
     public static final String TOPIC_DWD_TRAFFIC_ERR = "dwd_traffic_err";
     public static final String TOPIC_DWD_TRAFFIC_PAGE = "dwd_traffic_page";
     public static final String TOPIC_DWD_TRAFFIC_ACTION = "dwd_traffic_action";

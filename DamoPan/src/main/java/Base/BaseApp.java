@@ -1,6 +1,7 @@
 package Base;
 
 import Utils.FlinkSource;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.restartstrategy.RestartStrategies;
 import org.apache.flink.api.common.time.Time;
@@ -10,6 +11,8 @@ import org.apache.flink.runtime.state.hashmap.HashMapStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+
+import java.time.Duration;
 
 /**
  * @Package Base.BaseApp
@@ -31,19 +34,30 @@ public abstract class BaseApp {
                 (CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
 
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(2000L);
-        env.setRestartStrategy(RestartStrategies.failureRateRestart(3,
-                Time.days(30),Time.seconds(3)));
+//        env.setRestartStrategy(RestartStrategies.failureRateRestart(3,
+//                Time.days(30),Time.seconds(3)));
 
 
         env.setStateBackend(new HashMapStateBackend());
 
 
         KafkaSource<String> kafkaSource = FlinkSource.getKafkaSource(topic);
-        DataStreamSource<String> kafkaDs =
-                env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(),
-                        "kafkaSource");
-
-        handle(env,kafkaDs);
+        DataStreamSource<String> kafkaSource2 = env.fromSource(kafkaSource,
+                WatermarkStrategy.<String>forBoundedOutOfOrderness(Duration.ofSeconds(3))
+                        .withTimestampAssigner((event, timestamp) -> {
+                                    if (event != null){
+                                        try {
+                                            return JSONObject.parseObject(event).getLong("ts_ms");
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                            System.err.println("Failed to parse event as JSON or get ts_ms: " + event);
+                                            return 0L;
+                                        }
+                                    }
+                                    return 0L;
+                                }
+                        ), "kafka_source");
+        handle(env,kafkaSource2);
         env.execute();
     }
     public abstract  void handle
