@@ -196,7 +196,12 @@ public class AgeThemeSummaryDetails extends BaseApp {
                 collector.collect(jsonObject);
             }
         });
-        uid_order_time_related_priceRange.print();
+//        uid_order_time_related_priceRange.print();
+        //金额 时间打分
+        SingleOutputStreamOperator<JSONObject> map = uid_order_time_related_priceRange.map(new PriceTime());
+//        map.print();
+
+
 
 //        uid_order_time_related_priceRange.filter(o->!o.getString("age_group").equals("未知")).print();
 
