@@ -1,5 +1,7 @@
 package Constant;
 
+import java.sql.Connection;
+
 /**
  * @Package Constant.Constant
  * @Author zeyang_jia
@@ -7,6 +9,7 @@ package Constant;
  * @description:常量类
  */
 public class Constant {
+
     public static final String mysql_host = "cdh03";
     public static final int MYSQL_PORT = 3306;
     public static final String mysql_user_name = "root";

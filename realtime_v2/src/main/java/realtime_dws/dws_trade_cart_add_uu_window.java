@@ -92,6 +92,7 @@ public class dws_trade_cart_add_uu_window extends BaseApp {
                             }
                         })
         );
+
         //开窗
         AllWindowedStream<JSONObject, TimeWindow> jsonObjectTimeWindowAllWindowedStream = ts.windowAll(TumblingEventTimeWindows.of(org.apache.flink.streaming.api.windowing.time.Time.seconds(5)));
         // 聚合

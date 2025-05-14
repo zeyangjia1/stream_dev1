@@ -71,18 +71,27 @@ public class Dim_App extends BaseApp {
         //"op":"d": {"before":{"source_table":"a","sink_table":"a","sink_family":"a","sink_columns":"aaabbb","sink_row_key":"aa"},"after":null,"source":{"version":"1.9.7.Final","connector":"mysql","name":"mysql_binlog_source","ts_ms":1716812341000,"snapshot":"false","db":"gmall2024_config","sequence":null,"table":"table_process_dim","server_id":1,"gtid":null,"file":"mysql-bin.000002","pos":11424323,"row":0,"thread":14,"query":null},"op":"d","ts_ms":1716812340475,"transaction":null}
         SingleOutputStreamOperator<CommonTable> tpds = mySQL_source.map(new MapFunction<String, CommonTable>() {
             @Override
-            public CommonTable map(String s) throws Exception {
-                JSONObject jsonObject = JSON.parseObject(s);
-                String op = jsonObject.getString("op");
-                CommonTable commonTable = null;
-                if ("d".equals(op)) {
-                    commonTable = jsonObject.getObject("before", CommonTable.class);
-                } else {
-                    commonTable = jsonObject.getObject("after", CommonTable.class);
-                }
-                commonTable.setOp(op);
-                return commonTable;
-            }
+public CommonTable map(String s) throws Exception {
+    // 将输入的 JSON 字符串解析为 JSONObject
+    JSONObject jsonObject = JSON.parseObject(s);
+    // 获取操作类型 "op"
+    String op = jsonObject.getString("op");
+    CommonTable commonTable = null;
+
+    // 根据操作类型决定是从 "before" 还是 "after" 字段中提取数据
+    if ("d".equals(op)) {
+        // 如果是 "d"（删除），从 "before" 中获取 CommonTable 对象
+        commonTable = jsonObject.getObject("before", CommonTable.class);
+    } else {
+        // 其他操作类型（如 "c"、"u"、"r"）从 "after" 中获取 CommonTable 对象
+        commonTable = jsonObject.getObject("after", CommonTable.class);
+    }
+
+    // 设置操作类型并返回对象
+    commonTable.setOp(op);
+    return commonTable;
+}
+
         });
 //        2> CommonTable(sourceTable=base_trademark, sinkTable=dim_base_trademark, sinkColumns=id,tm_name, sinkFamily=info, sinkRowKey=id, op=c)
 

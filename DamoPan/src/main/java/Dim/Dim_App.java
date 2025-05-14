@@ -33,7 +33,7 @@ import org.apache.hadoop.hbase.client.Connection;
 public class Dim_App extends BaseApp {
     public static void main(String[] args) {
         try {
-            new Dim_App().start(9090, 1, "dim_ck_group", Constant.topic_db);
+            new Dim_App().start(9098, 1, "dim_ck_group", Constant.topic_db);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

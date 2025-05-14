@@ -9,7 +9,6 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.co.BroadcastProcessFunction;
 import org.apache.flink.util.Collector;
-import Utils.JdbsUtils;
 import java.sql.Connection;
 import java.util.*;
 /**
@@ -26,17 +25,17 @@ public class Tablepeocessfcation extends BroadcastProcessFunction<JSONObject, Co
     public Tablepeocessfcation(MapStateDescriptor<String, CommonTable_Dim> tableMapStateDescriptor) {
         this.tableMapStateDescriptor = tableMapStateDescriptor;
     }
-
-    @Override
-    public void open(Configuration parameters) throws Exception {
-        Connection mySQLConnection = JdbsUtils.getMySQLConnection();
-        List<CommonTable_Dim> commonTables = JdbsUtils.queryList(mySQLConnection, "select * from realtime_v2.table_process_dim", CommonTable_Dim.class);
-        for (CommonTable_Dim commonTable : commonTables) {
-            configMap.put(commonTable.getSourceTable(),commonTable);
-        }
-        JdbsUtils.closeMySQLConnection(mySQLConnection);
-
-    }
+//
+//    @Override
+//    public void open(Configuration parameters) throws Exception {
+//        Connection mySQLConnection = JdbsUtils.getMySQLConnection();
+//        List<CommonTable_Dim> commonTables = JdbsUtils.queryList(mySQLConnection, "select * from realtime_v2.table_process_dim", CommonTable_Dim.class);
+//        for (CommonTable_Dim commonTable : commonTables) {
+//            configMap.put(commonTable.getSourceTable(),commonTable);
+//        }
+//        JdbsUtils.closeMySQLConnection(mySQLConnection);
+//
+//    }
 
     @Override
     public void processElement(JSONObject jsonObject, BroadcastProcessFunction<JSONObject, CommonTable_Dim, Tuple2<JSONObject, CommonTable_Dim>>.

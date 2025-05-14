@@ -23,12 +23,9 @@ public  abstract class BaseApp {
         //1.1 指定流处理环境
         Configuration conf = new Configuration();
         conf.setInteger("rest.port", port);
-
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(conf);
-
         //1.2 设置并行度
         env.setParallelism(parallelism);
-
         // 5000毫秒检查一次    精确一次语义。
         env.enableCheckpointing(5000L, CheckpointingMode.EXACTLY_ONCE);
         //2.2 设置检查点超时时间
@@ -51,7 +48,8 @@ public  abstract class BaseApp {
 
         //3.3 消费数据 封装为流
         DataStreamSource<String> kafkaDs
-                = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(), "Kafka_Source");
+                = env.fromSource(kafkaSource, WatermarkStrategy.noWatermarks(),
+                "Kafka_Source");
 
         //TODO 4.处理逻辑
         handle(env,kafkaDs);

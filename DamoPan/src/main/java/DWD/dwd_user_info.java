@@ -177,5 +177,7 @@ public class dwd_user_info extends BaseApp {
 //        map.print();
 
         map.sinkTo(FinkSink.getkafkasink(Constant.dmp_user_info));
+
+
     }
 }

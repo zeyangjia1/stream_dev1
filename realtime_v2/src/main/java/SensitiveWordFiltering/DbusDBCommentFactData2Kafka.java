@@ -99,7 +99,7 @@ public class DbusDBCommentFactData2Kafka {
                 ).uid("async_hbase_dim_base_dic_func")
                 .name("async_hbase_dim_base_dic_func");
 //        3> {"op":"u","before":{"payment_way":"3501","refundable_time":1747264165000,"original_total_amount":"12787.00","order_status":"1005","consignee_tel":"13937298935","trade_body":"香奈儿（Chanel）女士香水5号香水 粉邂逅柔情淡香水EDT 粉邂逅淡香水35ml等3件商品","id":3906,"operate_time":1746659425000,"consignee":"呼延行","create_time":1746659365000,"coupon_reduce_amount":"0.00","out_trade_no":"129916364745444","total_amount":"11587.10","user_id":1130,"province_id":12,"activity_reduce_amount":"1199.90"},"after":{"payment_way":"3501","refundable_time":1747264165000,"original_total_amount":"12787.00","order_status":"1006","consignee_tel":"13937298935","trade_body":"香奈儿（Chanel）女士香水5号香水 粉邂逅柔情淡香水EDT 粉邂逅淡香水35ml等3件商品","id":3906,"operate_time":1746663030000,"consignee":"呼延行","create_time":1746659365000,"coupon_reduce_amount":"0.00","out_trade_no":"129916364745444","total_amount":"11587.10","user_id":1130,"province_id":12,"activity_reduce_amount":"1199.90"},"source":{"thread":400,"server_id":1,"version":"1.9.7.Final","file":"mysql-bin.000039","connector":"mysql","pos":13650954,"name":"mysql_binlog_source","row":0,"ts_ms":1746671651000,"snapshot":"false","db":"gmall_config","table":"order_info"},"ts_ms":1746671650605}
-//
+
 //        enrichedStream.print();
 //        // 处理评论数据
 //        // {"op":"c","create_time":1746653124000,"commentTxt":"评论内容：36913887965764674188858298813931966419435136341364","sku_id":19,"server_id":"1","dic_name":"好评","appraise":"1201","user_id":221,"id":89,"spu_id":5,"order_id":979,"ts_ms":1746596800251,"db":"realtime_v1","table":"comment_info"}

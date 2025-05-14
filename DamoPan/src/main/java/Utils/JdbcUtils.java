@@ -1,6 +1,5 @@
 package Utils;
 
-import Constant.Constant;
 import com.google.common.base.CaseFormat;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -9,34 +8,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Package realtime_Dim.utils.JdbsUtils
- * @Author ayang
- * @Date 2025/4/10 14:01
- * @description: 通过JDBC操作MySQL数据库
+ * @Package com.stream.common.utils.JdbcUtils
+ * @Author zhou.han
+ * @Date 2024/12/20 08:51
+ * @description: MySQL Utils
  */
-public class JdbsUtils<t> {
-    public static Connection getMySQLConnection() throws Exception {
-        //注册驱动
+public class JdbcUtils {
+
+    public static Connection getMySQLConnection(String mysqlUrl,String username,String pwd) throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        //建立连接
-        Connection conn = DriverManager.getConnection(Constant.MYSQL_URL, Constant.mysql_user_name, Constant.mysql_password);
-        return conn;
+        return DriverManager.getConnection(mysqlUrl, username, pwd);
     }
-    //关闭链接
+
+
     public static void closeMySQLConnection(Connection conn) throws SQLException {
         if(conn != null && !conn.isClosed()){
             conn.close();
         }
     }
-    //   //从数据库表中查询数据
+
     public static <T> List<T> queryList(Connection conn, String sql, Class<T> clz, boolean... isUnderlineToCamel) throws Exception {
         List<T> resList = new ArrayList<>();
-        boolean defaultIsUToC = false;  // 默认不执行下划线转驼峰
+        boolean defaultIsUToC = false;
 
         if (isUnderlineToCamel.length > 0) {
             defaultIsUToC = isUnderlineToCamel[0];
         }
-
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         ResultSetMetaData metaData = rs.getMetaData();
@@ -54,6 +51,35 @@ public class JdbsUtils<t> {
             }
             resList.add(obj);
         }
+
         return  resList;
     }
+
+    public static <T> List<T> queryList2(Connection conn, String sql, Class<T> clz, boolean... isUnderlineToCamel) throws Exception {
+        List<T> resList = new ArrayList<>();
+        boolean defaultIsUToC = false;
+
+        if (isUnderlineToCamel.length > 0) {
+            defaultIsUToC = isUnderlineToCamel[0];
+        }
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        ResultSetMetaData metaData = rs.getMetaData();
+        while (rs.next()){
+            T obj = clz.newInstance();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                //使用getColumnLabel获取别名
+                String columnName = metaData.getColumnLabel(i);
+                Object columnValue = rs.getObject(i);
+                if(defaultIsUToC){
+                    columnName = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, columnName);
+                }
+                BeanUtils.setProperty(obj, columnName, columnValue);
+            }
+            resList.add(obj);
+        }
+
+        return  resList;
+    }
+
 }
