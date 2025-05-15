@@ -46,17 +46,17 @@ public class AgeGroupFunc {
         }
 
         if (age >= 18 && age <= 24) {
-            return "18-24岁";
+            return "18-24";
         } else if (age >= 25 && age <= 29) {
-            return "25-29岁";
+            return "25-29";
         } else if (age >= 30 && age <= 34) {
-            return "30-34岁";
+            return "30-34";
         } else if (age >= 35 && age <= 39) {
-            return "35-39岁";
+            return "35-39";
         } else if (age >= 40 && age <= 49) {
-            return "40-49岁";
+            return "40-49";
         } else {
-            return "50岁以上";
+            return "50";
         }
     }
 

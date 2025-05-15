@@ -35,4 +35,9 @@ public class OrderDetailSkuHbase extends RichMapFunction<JSONObject, JSONObject>
         a.put("category3_id", skuInfoJsonObj.getString("category3_id"));
         return a;
     }
+
+
+
+
+
 }

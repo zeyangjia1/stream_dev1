@@ -4,16 +4,15 @@ import Base.BaseApp;
 import Bean.DimBaseCategory;
 import Constant.Constant;
 import DWD.func.*;
-import Utils.ConfigUtils;
-import Utils.FlinkSource;
-import Utils.Hbaseutlis;
-import Utils.JdbcUtils;
+import Utils.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import func.FilterBloomDeduplicatorUidFunc;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.RichMapFunction;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.KeyedStream;
@@ -25,6 +24,8 @@ import org.apache.flink.streaming.api.windowing.assigners.TumblingProcessingTime
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.time.Duration;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public class AgeThemeSummaryDetails extends BaseApp {
     public static void main(String[] args) throws Exception {
-        new AgeThemeSummaryDetails().start(9090, 4, "topic_db", Constant.topic_db);
+        new AgeThemeSummaryDetails().start(9090, 2, "AgeThemeSummaryDetails", Constant.topic_db);
     }
     private static final List<DimBaseCategory> dim_base_categories;
     private static final Connection connection;
@@ -145,15 +146,20 @@ public class AgeThemeSummaryDetails extends BaseApp {
                 .window(TumblingProcessingTimeWindows.of(Time.minutes(3)))
                 .reduce((value1, value2) -> value2);
 
-
-
-
-
-
-        //调用打分模型进行打分
-        win2MinutesPageLogsDs.map(new MapDeviceAndSearchMarkModelFunc(dim_base_categories,device_rate_weight_coefficient,search_rate_weight_coefficient))
-                .print();
-//        1> {"device_35_39":0.04,"os":"iOS,Android","device_50":0.02,"search_25_29":0,"ch":"Appstore,xiaomi,oppo,wandoujia","pv":90,"device_30_34":0.05,"device_18_24":0.07,"search_50":0,"search_40_49":0,"uid":"2","device_25_29":0.06,"md":"iPhone 14,xiaomi 13,iPhone 13,iPhone 14 Plus,vivo IQOO Z6x ,OPPO Remo8,vivo x90,Redmi k50,xiaomi 12 ultra ","search_18_24":0,"judge_os":"iOS","search_35_39":0,"device_40_49":0.03,"search_item":"iPhone14,小米","ba":"iPhone,xiaomi,OPPO,vivo,Redmi","search_30_34":0}
+        SingleOutputStreamOperator<JSONObject> dmp_user_age_search = dmp_user_age.keyBy(o -> o.getString("uid"))
+                .intervalJoin(win2MinutesPageLogsDs.keyBy(o -> o.getString("uid")))
+                .between(Time.hours(-24), Time.hours(24))
+                .process(new ProcessJoinFunction<JSONObject, JSONObject, JSONObject>() {
+                    @Override
+                    public void processElement(JSONObject a, JSONObject aa, ProcessJoinFunction<JSONObject, JSONObject, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putAll(a);
+                        aa.remove("ts");
+                        jsonObject.putAll(aa);
+                        collector.collect(jsonObject);
+                    }
+                });
+//        {"birthday":"1968-02-08","uname":"方晶妍","gender":"F","os":"iOS,Android","ch":"Appstore,oppo,wandoujia,360","age_group":"50岁以上","pv":42,"weight":"58","uid":"50","login_name":"ok3hqncd3wx","unit_height":"cm","ear":1960,"md":"iPhone 14,realme Neo2,iPhone 13,iPhone 14 Plus,vivo IQOO Z6x ,SAMSUNG Galaxy S21,vivo x90","user_level":"1","phone_num":"13199299967","unit_weight":"kg","search_item":"联想,衬衫","email":"ok3hqncd3wx@0355.net","ts_ms":1747295911194,"height":"161","ts":1747265934134,"ba":"iPhone,realme,vivo,SAMSUNG"}
 
 
         KeyedStream<JSONObject, String> dmp_uid_key = dmp_user_age
@@ -196,14 +202,11 @@ public class AgeThemeSummaryDetails extends BaseApp {
                 collector.collect(jsonObject);
             }
         });
-//        uid_order_time_related_priceRange.print();
+
+
+
         //金额 时间打分
-        SingleOutputStreamOperator<JSONObject> map = uid_order_time_related_priceRange.map(new PriceTime());
-//        map.print();
-
-
-
-//        uid_order_time_related_priceRange.filter(o->!o.getString("age_group").equals("未知")).print();
+        SingleOutputStreamOperator<JSONObject> time_related_priceRange = uid_order_time_related_priceRange.map(new PriceTime());
 
 
         //关联 订单 和明细 提取 sku 和 uid
@@ -231,8 +234,112 @@ public class AgeThemeSummaryDetails extends BaseApp {
         SingleOutputStreamOperator<JSONObject> order_detail_sku_category2 = order_detail_sku_category3.map(new order_detail_sku_category2Func());
         //关联  一级 品类
         SingleOutputStreamOperator<JSONObject> order_detail_sku_category = order_detail_sku_category2.map(new order_detail_sku_categoryFunc());
+        SingleOutputStreamOperator<JSONObject> category = order_detail_sku_category.process(new ProcessFunction<JSONObject, JSONObject>() {
+            @Override
+            public void processElement(JSONObject jsonObject, ProcessFunction<JSONObject, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                String category2_name = jsonObject.getString("category2_name");
+                String category1_name = jsonObject.getString("category1_name");
+                String category3_name = jsonObject.getString("category3_name");
+                String uid = jsonObject.getString("uid");
+                JSONObject a = new JSONObject();
+                a.put("category_name", category3_name);
+                a.put("category_name", category2_name);
+                a.put("category_name", category1_name);
+                a.put("uid", uid);
+                collector.collect(a);
+
+            }
+        });
+
+
+        SingleOutputStreamOperator<JSONObject> user_category = dmp_user_age.keyBy(o -> o.getString("uid"))
+                .intervalJoin(category.keyBy(o -> o.getString("uid")))
+                .between(Time.hours(-1), Time.hours(1))
+                .process(new ProcessJoinFunction<JSONObject, JSONObject, JSONObject>() {
+                    @Override
+                    public void processElement(JSONObject a, JSONObject aa, ProcessJoinFunction<JSONObject, JSONObject, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.putAll(a);
+                        jsonObject.put("category_name", aa.getString("category_name"));
+                        collector.collect(jsonObject);
+                    }
+                });
+
         //关联 品牌表
         SingleOutputStreamOperator<JSONObject> order_detail_sku_tm = order_detail_sku.map(new order_detail_sku_tm_func());
+        SingleOutputStreamOperator<JSONObject> user_category_tm = user_category.keyBy(o -> o.getString("uid"))
+                .intervalJoin(order_detail_sku_tm.keyBy(o -> o.getString("uid")))
+                .between(Time.hours(-1), Time.hours(1))
+                .process(new ProcessJoinFunction<JSONObject, JSONObject, JSONObject>() {
+                    @Override
+                    public void processElement(JSONObject a, JSONObject aa, ProcessJoinFunction<JSONObject, JSONObject, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                        JSONObject jsonObject = new JSONObject();
+                            jsonObject.putAll(a);
+                            jsonObject.put("tm_name", aa.getString("tm_name"));
+                            collector.collect(jsonObject);
+                    }
+                });
+        //过滤 品牌类目 去除null
+
+        SingleOutputStreamOperator<JSONObject> user_category_tm_fifter = user_category_tm.process(new ProcessFunction<JSONObject, JSONObject>() {
+            @Override
+            public void processElement(JSONObject jsonObject, ProcessFunction<JSONObject, JSONObject>.Context context, Collector<JSONObject> collector) throws Exception {
+                if (jsonObject.containsKey("category_name")
+                        && jsonObject.containsKey("tm_name")
+                        && !jsonObject.getString("category_name").isEmpty()
+                        && !jsonObject.getString("tm_name").isEmpty()) {
+                    collector.collect(jsonObject);
+                }
+
+            }
+        });
+
+
+        //金额时间计算权重后去重
+        SingleOutputStreamOperator<JSONObject> BloomLTimeTotal = time_related_priceRange.keyBy(o -> o.getString("uid"))
+                .filter(new FilterBloomDeduplicatorUidFunc(1000000, 0.0001, "uid", "ts_ms"));
+//        BloomLTimeTotal:2> {"birthday":"1982-03-08","create_time":"1747339421000","uname":"伍婉娴","age_group":"40-49","weight":"71","uid":"18","login_name":"x2egtg6p8","unit_height":"cm","total_amount":"3299.00","ear":1980,"user_level":"2","phone_num":"13597716793","unit_weight":"kg","order_id":"666","priceRange":"中间商品","email":"x2egtg6p8@3721.net","ts_ms":1747295931689,"time_period":"凌晨","height":"158","result1":{"te_40-49":0.01}}
+
+        //cm 是类目 tm 是品牌 计算权重
+        SingleOutputStreamOperator<JSONObject> CmTmScore = user_category_tm_fifter.map(new CategoryTmName());
+//        4> {"birthday":"1995-11-08","category_name":"手机","tm_source":{"tm_25_29":0.06},"uname":"俞宜","gender":"F","age_group":"25-29岁","cm_source":{"cm_25_29":0.12},"weight":"40","tm_name":"香奈儿","uid":"38","login_name":"745p7p2rrfe","unit_height":"cm","ear":1990,"user_level":"1","phone_num":"13987866129","unit_weight":"kg","email":"745p7p2rrfe@aol.com","ts_ms":1747295911172,"height":"164"}
+
+        //调用打分模型进行计算权重  设备    搜索词
+        SingleOutputStreamOperator<JSONObject> search_device_source = dmp_user_age_search.map(new MapDeviceAndSearchMarkModelFunc(dim_base_categories, device_rate_weight_coefficient, search_rate_weight_coefficient));
+        SingleOutputStreamOperator<JSONObject> search_device_source_tmp = search_device_source.map(new RichMapFunction<JSONObject, JSONObject>() {
+            @Override
+            public JSONObject map(JSONObject jsonObject) throws Exception {
+                String[] fields2 = {"device", "search"};
+                String ageGroup = jsonObject.getString("age_group");
+                BigDecimal sum = BigDecimal.ZERO;
+                for (String s : fields2) {
+                    BigDecimal bigDecimal = jsonObject.getBigDecimal(s + "_" + ageGroup);
+                    sum = sum.add(bigDecimal != null ? bigDecimal : BigDecimal.ZERO);
+                }
+                jsonObject.put("sum", sum);
+                sum = sum.setScale(3, RoundingMode.HALF_UP);
+                double aDouble = sum.doubleValue();
+                return jsonObject;
+            }
+        });
+//        search_device_source_tmp.print("tmp-->");
+
+
+
+
+
+        //六个标签写入到kafka
+        SingleOutputStreamOperator<String> price_string = BloomLTimeTotal.map(JSON::toString);
+        SingleOutputStreamOperator<String> cmtm_string = CmTmScore.map(JSON::toString);
+        SingleOutputStreamOperator<String> search_string = search_device_source_tmp.map(JSON::toString);
+        KafkaSink<String> price_string1 = FinkSink.getkafkasink("TotalSource_string");
+        KafkaSink<String> cmtm_string1 = FinkSink.getkafkasink("CmTmSource_string");
+        KafkaSink<String> search_string1 = FinkSink.getkafkasink("SearchSource_string");
+        price_string.sinkTo(price_string1);
+        cmtm_string.sinkTo(cmtm_string1);
+        search_string.sinkTo(search_string1);
+
+
 
     }
 }

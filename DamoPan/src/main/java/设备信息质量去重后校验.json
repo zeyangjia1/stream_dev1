@@ -17,5 +17,5 @@
 {"uid":"207","deviceInfo":{"ar":"21","uid":"207","os":"iOS","ch":"Appstore","md":"iPhone 13","vc":"v2.1.132","ba":"iPhone"},"ts":1747191831460}
 {"uid":"207","deviceInfo":{"ar":"21","uid":"207","os":"iOS","ch":"Appstore","md":"iPhone 13","vc":"v2.1.132","ba":"iPhone"},"ts":1747191844207}
 
-整合之后: 
-{"uid":"207","os":"iOS,Android","ch":"Appstore,xiaomi,vivo","pv":18,"md":"iPhone 13,vivo IQOO Z6x ,xiaomi 12 ultra ","search_item":"","ba":"iPhone,xiaomi,vivo"}
+整合之后:
+ {"uid": "207", "os": "iOS,Android", "ch": "Appstore,xiaomi,vivo", "pv": 18, "md": "iPhone 13,vivo IQOO Z6x ,xiaomi 12 ultra ", "search_item": "", "ba": "iPhone,xiaomi,vivo"}

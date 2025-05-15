@@ -73,6 +73,7 @@ public class AggregateUserDataProcessFunction extends KeyedProcessFunction<Strin
         // 构建输出JSON
         JSONObject output = new JSONObject();
         output.put("uid", value.getString("uid"));
+        output.put("ts", value.getLong("ts"));
         output.put("pv", pv);
         output.put("os", String.join(",", getField("os")));
         output.put("ch", String.join(",", getField("ch")));

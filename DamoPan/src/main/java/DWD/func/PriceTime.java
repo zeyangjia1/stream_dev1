@@ -3,6 +3,9 @@ package DWD.func;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.functions.RichMapFunction;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * @Package DWD.func.PriceTime
  * @Author zeyang_jia
@@ -15,83 +18,192 @@ public class PriceTime extends RichMapFunction<JSONObject, JSONObject> {
         String priceRange = jsonObject.getString("priceRange");
         String time_period = jsonObject.getString("time_period");
 
-        if (priceRange.equals("高价商品")) {
-            jsonObject.put("price_18_24", 0.1 * 0.15);
-            jsonObject.put("price_25_29", 0.2 * 0.15);
-            jsonObject.put("price_30_34", 0.3 * 0.15);
-            jsonObject.put("price_35_39", 0.4 * 0.15);
-            jsonObject.put("price_40_49", 0.5 * 0.15);
-            jsonObject.put("price_50", 0.6 * 0.15);
 
-        } else if (priceRange.equals("中价商品")) {
-            jsonObject.put("price_18_24", 0.2 * 0.15);
-            jsonObject.put("price_25_29", 0.3 * 0.15);
-            jsonObject.put("price_30_34", 0.4 * 0.15);
-            jsonObject.put("price_35_39", 0.5 * 0.15);
-            jsonObject.put("price_40_49", 0.6 * 0.15);
-            jsonObject.put("price_50", 0.7 * 0.15);
-        } else if (priceRange.equals("低价商品")){
-            jsonObject.put("price_18_24", 0.8 * 0.15);
-            jsonObject.put("price_25_29", 0.6 * 0.15);
-            jsonObject.put("price_30_34", 0.4 * 0.15);
-            jsonObject.put("price_35_39", 0.3 * 0.15);
-            jsonObject.put("price_40_49", 0.2 * 0.15);
-            jsonObject.put("price_50", 0.1 * 0.15);
-        }else if (time_period.equals("凌晨")){
-            jsonObject.put("time_18_24", 0.2 * 0.1);
-            jsonObject.put("time_25_29", 0.1 * 0.1);
-            jsonObject.put("time_30_34", 0.1 * 0.1);
-            jsonObject.put("time_35_39", 0.1 * 0.1);
-            jsonObject.put("time_40_49", 0.1 * 0.1);
-            jsonObject.put("time_50", 0.1 * 0.15);
-        }else if (time_period.equals("早晨")){
-            jsonObject.put("time_18_24", 0.1 * 0.1);
-            jsonObject.put("time_25_29", 0.1 * 0.1);
-            jsonObject.put("time_30_34", 0.1 * 0.1);
-            jsonObject.put("time_35_39", 0.1 * 0.1);
-            jsonObject.put("time_40_49", 0.2 * 0.1);
-            jsonObject.put("time_50", 0.2 * 0.1);
-        }else if (time_period.equals("上午")){
-            jsonObject.put("time_18_24", 0.2 * 0.1);
-            jsonObject.put("time_25_29", 0.2 * 0.1);
-            jsonObject.put("time_30_34", 0.2 * 0.1);
-            jsonObject.put("time_35_39", 0.2 * 0.1);
-            jsonObject.put("time_40_49", 0.3 * 0.1);
-            jsonObject.put("time_50", 0.4 * 0.1);
-        }else if (time_period.equals("中午")){
-            jsonObject.put("time_18_24", 0.4 * 0.1);
-            jsonObject.put("time_25_29", 0.4 * 0.1);
-            jsonObject.put("time_30_34", 0.4 * 0.1);
-            jsonObject.put("time_35_39", 0.4 * 0.1);
-            jsonObject.put("time_40_49", 0.4 * 0.1);
-            jsonObject.put("time_50", 0.3 * 0.1);
+        JSONObject result = new JSONObject();
+        String age_group = jsonObject.getString("age_group");
+        if (priceRange != null && time_period != null
+        &&jsonObject.containsKey("priceRange") && jsonObject.containsKey("time_period")
+        ){
+            if (age_group != null && age_group.equals("18-24")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_18_24", round(0.2 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_18_24", round(0.1 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_18_24", round(0.2 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_18_24", round(0.4 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_18_24", round(0.4 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_18_24", round(0.8 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_18_24", round(0.9 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_18_24", round(0.1 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_18_24", round(0.2 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_18_24", round(0.8 * 0.15));
+                }
+            }
 
-        }else if (time_period.equals("下午")){
-            jsonObject.put("time_18_24", 0.4 * 0.1);
-            jsonObject.put("time_25_29", 0.5 * 0.1);
-            jsonObject.put("time_30_34", 0.6 * 0.1);
-            jsonObject.put("time_35_39", 0.6 * 0.1);
-            jsonObject.put("time_40_49", 0.6 * 0.1);
-            jsonObject.put("time_50", 0.4 * 0.1);
 
-        }else if (time_period.equals("晚上")){
-            jsonObject.put("time_18_24", 0.8 * 0.1);
-            jsonObject.put("time_25_29", 0.7 * 0.1);
-            jsonObject.put("time_30_34", 0.6 * 0.1);
-            jsonObject.put("time_35_39", 0.5 * 0.1);
-            jsonObject.put("time_40_49", 0.4 * 0.1);
-            jsonObject.put("time_50", 0.3 * 0.1);
 
-        }else if (time_period.equals("夜间")){
-            jsonObject.put("time_18_24", 0.9 * 0.1);
-            jsonObject.put("time_25_29", 0.7 * 0.1);
-            jsonObject.put("time_30_34", 0.5 * 0.1);
-            jsonObject.put("time_35_39", 0.3 * 0.1);
-            jsonObject.put("time_40_49", 0.2 * 0.1);
-            jsonObject.put("time_50", 0.1 * 0.1);
+            if (age_group != null && age_group.equals("25-29")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_25-29", round(0.1 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_25-29", round(0.1 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_25-29", round(0.2 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_25-29", round(0.4 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_25-29", round(0.5 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_25-29", round(0.7 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_25-29", round(0.7 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_25-29", round(0.2 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_25-29", round(0.4 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_25-29", round(0.6 * 0.15));
+                }
+            }
 
+
+
+            if (age_group != null && age_group.equals("30-34")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_30.14", round(0.1 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_30.14", round(0.1 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_30.14", round(0.2 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_30.14", round(0.4 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_30.14", round(0.5 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_30.14", round(0.6 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_30.14", round(0.5 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_30.14", round(0.1 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_30.14", round(0.6 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_30.14", round(0.4 * 0.15));
+                }
+            }
+
+
+
+            if (age_group != null && age_group.equals("35-39")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_35-39", round(0.1 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_35-39", round(0.1 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_35-39", round(0.2 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_35-39", round(0.4 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_35-39", round(0.5 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_35-39", round(0.5 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_35-39", round(0.1 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_35-39", round(0.4 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_35-39", round(0.7 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_35-39", round(0.1 * 0.15));
+                }
+            }
+
+
+
+            if (age_group != null && age_group.equals("40-49")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_40-49", round(0.1 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_40-49", round(0.2 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_40-49", round(0.1 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_40-49", round(0.4 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_40-49", round(0.5 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_40-49", round(0.4 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_40-49", round(0.2 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_40-49", round(0.5 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_40-49", round(0.8 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_40-49", round(0.2 * 0.15));
+                }
+            }
+
+
+
+            if (age_group != null && age_group.equals("50")) {
+                // 时间
+                if (time_period.equals("凌晨")) {
+                    result.put("te_50", round(0.1 * 0.1));
+                } else if (time_period.equals("早晨")) {
+                    result.put("te_50", round(0.1 * 0.1));
+                } else if (time_period.equals("上午")) {
+                    result.put("te_50", round(0.4 * 0.1));
+                } else if (time_period.equals("中午")) {
+                    result.put("te_50", round(0.1 * 0.1));
+                }else if (time_period.equals("下午")) {
+                    result.put("te_50", round(0.4 * 0.1));
+                }else if (time_period.equals("晚上")) {
+                    result.put("te_50", round(0.1 * 0.1));
+                }else if (time_period.equals("夜间")) {
+                    result.put("te_50", round(0.1 * 0.1));
+                }
+                //价格
+                if (priceRange.equals("高价商品")) {
+                    result.put("tl_50", round(0.6 * 0.15));
+                } else if (priceRange.equals("中价商品")) {
+                    result.put("tl_50", round(0.7 * 0.15));
+                } else if (priceRange.equals("低价商品")) {
+                    result.put("tl_50", round(0.1 * 0.15));
+                }
+            }
         }
 
+
+        jsonObject.put("result1",result);
         return jsonObject;
+    }
+    private static double round(double value) {
+        return BigDecimal.valueOf(value)
+                .setScale(3, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

@@ -33,7 +33,6 @@ public class FilterBloomDeduplicatorUidFunc extends RichFilterFunction<JSONObjec
         this.falsePositiveRate = falsePositiveRate;
         this.uid = uid;
         this.ts_ms = ts_ms;
-
     }
 
     @Override

@@ -1,0 +1,23 @@
+{
+  "birthday": "1991-04-08",
+  "category_name": "家用电器",
+  "uname": "鲍行",
+  "gender": "M",
+  "age_group": "30-34",
+  "weight": "50",
+  "tm_name": "联想",
+  "uid": "35",
+  "login_name": "amantuyy0",
+  "unit_height": "cm",
+  "ear": 1990,
+  "user_level": "1",
+  "phone_num": "13527165486",
+  "unit_weight": "kg",
+  "email": "amantuyy0@ask.com",
+  "ts_ms": 1747295931736,
+  "result2": {
+    "cm_30_34": 0.12,
+    "tm_30_34": 0.1
+  },
+  "height": "176"
+}

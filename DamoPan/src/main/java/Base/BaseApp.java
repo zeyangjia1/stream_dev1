@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.contrib.streaming.state.RocksDBStateBackend;
 import org.apache.flink.runtime.state.hashmap.HashMapStateBackend;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
@@ -35,7 +36,7 @@ public abstract class BaseApp {
 
 
         env.setStateBackend(new HashMapStateBackend());
-
+//        env.getCheckpointConfig().setCheckpointStorage("file:///D:/idea_work/Stream_dev/realtime_v2/src/main/java/CK" + ckAndGroupId);
 
         KafkaSource<String> kafkaSource = FlinkSource.getKafkaSource(topic);
         DataStreamSource<String> kafkaSource2 = env.fromSource(kafkaSource,
