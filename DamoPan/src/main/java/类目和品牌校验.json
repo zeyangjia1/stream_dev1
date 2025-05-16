@@ -1,23 +1,25 @@
 {
-  "birthday": "1991-04-08",
-  "category_name": "家用电器",
-  "uname": "鲍行",
-  "gender": "M",
-  "age_group": "30-34",
-  "weight": "50",
-  "tm_name": "联想",
-  "uid": "35",
-  "login_name": "amantuyy0",
+  "birthday": "1995-11-08",
+  "category_name": "手机",
+  "uname": "俞宜",
+  "gender": "F",
+  "age_group": "25-29",
+  "weight": "40",
+  "tm_name": "Redmi",
+  "uid": "38",
+  "login_name": "745p7p2rrfe",
   "unit_height": "cm",
+  "constellation": "天蝎座",
+  "era": "90年代",
   "ear": 1990,
   "user_level": "1",
-  "phone_num": "13527165486",
+  "phone_num": "13987866129",
   "unit_weight": "kg",
-  "email": "amantuyy0@ask.com",
-  "ts_ms": 1747295931736,
+  "email": "745p7p2rrfe@aol.com",
+  "ts_ms": 1747295931754,
   "result2": {
-    "cm_30_34": 0.12,
-    "tm_30_34": 0.1
+    "tm_25_29": 0.14,
+    "cm_25_29": 0.12
   },
-  "height": "176"
+  "height": "164"
 }

@@ -34,10 +34,12 @@ public class CategoryTmName extends RichMapFunction<JSONObject, JSONObject> {
     @Override
     public void open(org.apache.flink.configuration.Configuration parameters) throws Exception {
         // 初始化集合和映射
+        //一级类目
         trendCategoryValues = new HashSet<>(Arrays.asList("珠宝", "礼品箱包", "鞋靴", "服饰内衣", "个护化妆", "数码"));
+        //二级类目
         homeCategoryValues = new HashSet<>(Arrays.asList("母婴", "钟表", "厨具", "电脑办公", "家居家装", "家用电器", "图书、音像、电子书刊", "手机", "汽车用品"));
+        //三级类目
         healthCategoryValues = new HashSet<>(Arrays.asList("运动健康", "食品饮料、保健食品"));
-
         equipmentTmValues = new HashSet<>(Arrays.asList("Redmi", "苹果", "联想", "TCL", "小米"));
         trendTmValues = new HashSet<>(Arrays.asList("长粒香", "金沙河", "索芙特", "CAREMiLLE", "欧莱雅", "香奈儿"));
 

@@ -1,0 +1,29 @@
+{
+  "birthday": "2007-03-15",
+  "create_time": "1747295448000",
+  "uname": "戴静淑",
+  "age_group": "18-24",
+  "weight": "76",
+  "uid": "76",
+  "unit_height": "cm",
+  "constellation": "双鱼座",
+  "total_amount": "11749.00",
+  "era": "00年代",
+  "ear": 2000,
+  "unit_weight": "kg",
+  "new_ageGroup": "40-49",
+  "order_id": "572",
+  "priceRange": "高价商品",
+  "ts_ms": 1747295972435,
+  "time_period": "下午",
+  "height": "170",
+  "result1": {
+    "tl_18_24": 0.015,
+    "cm_18_24": 0.06,
+    "allSum": 0.365,
+
+    "te_18_24": 0.04,
+    "SearchSum": 0.07,
+    "tm_18_24": 0.18
+  }
+}
