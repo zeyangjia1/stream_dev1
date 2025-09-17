@@ -22,8 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class FilterBloomDeduplicatorUidFunc extends RichFilterFunction<JSONObject> {
 
     private static final Logger logger = LoggerFactory.getLogger(FilterBloomDeduplicatorUidFunc.class);
-
-    // 预期插入元素数量
+     // 预期插入元素数量
     private final int expectedInsertions;
     // 布隆过滤器的误判率
     private final double falsePositiveRate;

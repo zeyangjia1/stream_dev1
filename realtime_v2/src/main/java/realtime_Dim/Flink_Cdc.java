@@ -45,7 +45,6 @@ public class Flink_Cdc {
                 .build();
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> ds = env.fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
-                // 设置 source 节点的并行度为 4
                 .setParallelism(1);// 设置 sink 节点并行度为 1
         //c 添加
         //d 删除
@@ -67,7 +66,6 @@ public class Flink_Cdc {
                 .setBootstrapServers(brokers)
                 .setRecordSerializer(KafkaRecordSerializationSchema.builder()
                         .setTopic("topic_db")
-//                               realtime_v1_table_all_mysql_v2
                         .setValueSerializationSchema(new SimpleStringSchema())
                         .build()
                 )
